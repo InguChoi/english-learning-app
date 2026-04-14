@@ -34,30 +34,54 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Word is required." }, { status: 400 });
     }
 
-    const learningPack = await generateLearningPack(payload.word);
-
     const word = await prisma.word.create({
       data: {
         word: payload.word,
-        meaning: payload.meaning || learningPack.koreanMeaning,
-        koreanMeaning: learningPack.koreanMeaning,
-        englishDefinition: learningPack.englishDefinition,
+        meaning: payload.meaning,
         notes: payload.notes
       }
     });
 
-    await prisma.example.createMany({
-      data: learningPack.examples.map((example) => ({
-        wordId: word.id,
-        sentence: example.sentence,
-        koreanTranslation: example.koreanTranslation,
-        type: example.type
-      }))
-    });
+    try {
+      const learningPack = await generateLearningPack(payload.word);
 
-    return NextResponse.json(word, { status: 201 });
+      await prisma.$transaction([
+        prisma.word.update({
+          where: { id: word.id },
+          data: {
+            meaning: payload.meaning || learningPack.koreanMeaning,
+            koreanMeaning: learningPack.koreanMeaning,
+            englishDefinition: learningPack.englishDefinition
+          }
+        }),
+        prisma.example.createMany({
+          data: learningPack.examples.map((example) => ({
+            wordId: word.id,
+            sentence: example.sentence,
+            koreanTranslation: example.koreanTranslation,
+            type: example.type
+          }))
+        })
+      ]);
+    } catch (generationError) {
+      console.error("Word saved but learning content generation failed", generationError);
+
+      return NextResponse.json(
+        {
+          id: word.id,
+          generationError:
+            "The word was saved, but AI generation failed. Open the word and try regenerating."
+        },
+        { status: 201 }
+      );
+    }
+
+    return NextResponse.json({ id: word.id }, { status: 201 });
   } catch (error) {
     console.error("Failed to create word", error);
-    return NextResponse.json({ error: "Failed to create word." }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to create word." },
+      { status: 500 }
+    );
   }
 }

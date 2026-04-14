@@ -24,11 +24,19 @@ export function NewWordForm() {
         body: JSON.stringify({ word, notes })
       });
 
-      const data = (await response.json()) as { error?: string; id?: number };
+      const data = (await response.json()) as {
+        error?: string;
+        generationError?: string;
+        id?: number;
+      };
 
       if (!response.ok || !data.id) {
         setError(data.error || "Failed to save the word.");
         return;
+      }
+
+      if (data.generationError) {
+        console.warn(data.generationError);
       }
 
       router.push(`/words/${data.id}`);
