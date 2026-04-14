@@ -46,7 +46,24 @@ export default async function WordDetailPage({ params }: Props) {
             <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-900">
               {word.word}
             </h1>
-            <p className="mt-4 text-lg text-slate-600">{word.meaning}</p>
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  Korean meaning
+                </p>
+                <p className="mt-2 text-base leading-7 text-slate-800">
+                  {word.koreanMeaning || word.meaning || "Not generated yet"}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  English definition
+                </p>
+                <p className="mt-2 text-base leading-7 text-slate-800">
+                  {word.englishDefinition || "Not generated yet"}
+                </p>
+              </div>
+            </div>
             {word.notes ? (
               <div className="mt-5 rounded-2xl bg-slate-50 p-4">
                 <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -77,7 +94,8 @@ export default async function WordDetailPage({ params }: Props) {
           <div className="rounded-[2rem] border border-dashed border-slate-300 bg-white/70 p-10 text-center">
             <p className="text-lg font-semibold text-slate-900">No examples yet</p>
             <p className="mt-2 text-slate-600">
-              Use the generate button to create AI examples for this word.
+              Use the button to generate meaning, definition, translated examples, and audio-ready
+              sentences for this word.
             </p>
           </div>
         ) : (
@@ -93,6 +111,11 @@ export default async function WordDetailPage({ params }: Props) {
                       {formatExampleType(example.type)}
                     </p>
                     <p className="mt-3 text-lg leading-8 text-slate-800">{example.sentence}</p>
+                    {example.koreanTranslation ? (
+                      <p className="mt-3 text-sm leading-6 text-slate-500">
+                        {example.koreanTranslation}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="lg:w-72">
                     <TTSPlayer sentence={example.sentence} />

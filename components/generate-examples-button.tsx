@@ -29,14 +29,14 @@ export function GenerateExamplesButton({ wordId, word }: Props) {
       const data = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        setError(data.error || "Failed to generate examples.");
+        setError(data.error || "Failed to generate learning content.");
         return;
       }
 
       router.refresh();
     } catch (generationError) {
       console.error(generationError);
-      setError("Something went wrong while generating examples.");
+      setError("Something went wrong while generating learning content.");
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +50,7 @@ export function GenerateExamplesButton({ wordId, word }: Props) {
         disabled={isLoading}
         className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {isLoading ? "Generating..." : "Generate Examples"}
+        {isLoading ? "Refreshing..." : "Regenerate Content"}
       </button>
       {error ? <p className="text-right text-sm text-rose-600">{error}</p> : null}
     </div>

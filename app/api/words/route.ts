@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { generateLearningPack } from "@/lib/learning-pack";
 import { prisma } from "@/lib/prisma";
 import { normalizeWordPayload } from "@/lib/validators";
 
@@ -30,14 +31,28 @@ export async function POST(request: Request) {
     const payload = normalizeWordPayload(body);
 
     if (!payload) {
-      return NextResponse.json(
-        { error: "Word and meaning are required." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Word is required." }, { status: 400 });
     }
 
+    const learningPack = await generateLearningPack(payload.word);
+
     const word = await prisma.word.create({
-      data: payload
+      data: {
+        word: payload.word,
+        meaning: payload.meaning || learningPack.koreanMeaning,
+        koreanMeaning: learningPack.koreanMeaning,
+        englishDefinition: learningPack.englishDefinition,
+        notes: payload.notes
+      }
+    });
+
+    await prisma.example.createMany({
+      data: learningPack.examples.map((example) => ({
+        wordId: word.id,
+        sentence: example.sentence,
+        koreanTranslation: example.koreanTranslation,
+        type: example.type
+      }))
     });
 
     return NextResponse.json(word, { status: 201 });

@@ -9,13 +9,13 @@ export function normalizeWordPayload(payload: unknown) {
 
   const data = payload as Record<string, unknown>;
 
-  if (!isNonEmptyString(data.word) || !isNonEmptyString(data.meaning)) {
+  if (!isNonEmptyString(data.word)) {
     return null;
   }
 
   return {
     word: data.word.trim(),
-    meaning: data.meaning.trim(),
+    meaning: typeof data.meaning === "string" ? data.meaning.trim() : null,
     notes: typeof data.notes === "string" ? data.notes.trim() : ""
   };
 }

@@ -7,9 +7,12 @@ export default function NewWordPage() {
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">
           Add vocabulary
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">Save a new word</h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+          Save one word and let AI fill the rest
+        </h1>
         <p className="mt-3 text-slate-600">
-          Add the word, what it means to you, and any notes you want to remember later.
+          Enter only the word. The app will generate the Korean meaning, English definition, and
+          three translated example sentences for you.
         </p>
       </div>
 

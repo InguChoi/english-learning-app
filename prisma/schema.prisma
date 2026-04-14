@@ -14,21 +14,24 @@ enum ExampleType {
 }
 
 model Word {
-  id        Int       @id @default(autoincrement())
-  word      String
-  meaning   String
-  notes     String?
-  createdAt DateTime  @default(now())
-  examples  Example[]
+  id                Int       @id @default(autoincrement())
+  word              String
+  meaning           String?
+  koreanMeaning     String?
+  englishDefinition String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  examples          Example[]
 }
 
 model Example {
-  id        Int         @id @default(autoincrement())
-  wordId    Int
-  sentence  String
-  type      ExampleType
-  createdAt DateTime    @default(now())
-  word      Word        @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  id                Int         @id @default(autoincrement())
+  wordId            Int
+  sentence          String
+  koreanTranslation String?
+  type              ExampleType
+  createdAt         DateTime    @default(now())
+  word              Word        @relation(fields: [wordId], references: [id], onDelete: Cascade)
 
   @@index([wordId])
 }

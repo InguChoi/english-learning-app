@@ -26,7 +26,7 @@ export default async function WordsPage() {
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">Saved words</h1>
           <p className="mt-2 text-slate-600">
-            Review your words, open details, and generate examples whenever you need more context.
+            Review saved words with Korean meaning, English definition, example sentences, and TTS.
           </p>
         </div>
         <Link
@@ -55,7 +55,14 @@ export default async function WordsPage() {
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
                     {entry.word}
                   </h2>
-                  <p className="mt-2 text-slate-600">{entry.meaning}</p>
+                  <p className="mt-2 text-slate-600">
+                    {entry.koreanMeaning || entry.meaning || "Meaning will be generated after save."}
+                  </p>
+                  {entry.englishDefinition ? (
+                    <p className="mt-2 text-sm leading-6 text-slate-500">
+                      {entry.englishDefinition}
+                    </p>
+                  ) : null}
                 </div>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-slate-500">
                   {entry._count.examples} examples

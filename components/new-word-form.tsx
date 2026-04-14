@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 export function NewWordForm() {
   const router = useRouter();
   const [word, setWord] = useState("");
-  const [meaning, setMeaning] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,7 +21,7 @@ export function NewWordForm() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ word, meaning, notes })
+        body: JSON.stringify({ word, notes })
       });
 
       const data = (await response.json()) as { error?: string; id?: number };
@@ -50,7 +49,7 @@ export function NewWordForm() {
       <div className="space-y-6">
         <div>
           <label htmlFor="word" className="block text-sm font-semibold text-slate-700">
-            Word
+            Unknown word
           </label>
           <input
             id="word"
@@ -63,28 +62,14 @@ export function NewWordForm() {
         </div>
 
         <div>
-          <label htmlFor="meaning" className="block text-sm font-semibold text-slate-700">
-            Meaning
-          </label>
-          <input
-            id="meaning"
-            value={meaning}
-            onChange={(event) => setMeaning(event.target.value)}
-            placeholder="what this word means to you"
-            required
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-          />
-        </div>
-
-        <div>
           <label htmlFor="notes" className="block text-sm font-semibold text-slate-700">
-            Notes
+            Notes (optional)
           </label>
           <textarea
             id="notes"
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
-            placeholder="memory tip, synonym, grammar note, or context"
+            placeholder="optional memo, sentence context, or where you saw this word"
             rows={5}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
           />
@@ -92,12 +77,17 @@ export function NewWordForm() {
 
         {error ? <p className="text-sm font-medium text-rose-600">{error}</p> : null}
 
+        <p className="text-sm leading-6 text-slate-500">
+          Enter one word and the app will generate the Korean meaning, English definition, and
+          three example sentences automatically.
+        </p>
+
         <button
           type="submit"
           disabled={isSubmitting}
           className="inline-flex min-w-36 items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {isSubmitting ? "Saving..." : "Save word"}
+          {isSubmitting ? "Generating..." : "Save and generate"}
         </button>
       </div>
     </form>
